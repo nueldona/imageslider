@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Document</title>
+</head>
+<body>
+  
+  <section class="slider-container" id="sliderContainer">
+  </section>
+
+  <script>
+
+    // object for product list 
+    const products = [
+      {
+        name: "Airpods",
+        priceTag: "$999",
+        image: "https://i.ibb.co/y08W0Jx/image1.png"
+      },
+      {
+        name : "GalaxyS6",
+        priceTag : "$9999",
+        image: "/5-2-samsung-mobile-phone-png-hd.png"
+      },
+      {
+        name : "iPhone 12",
+        priceTag : "$9999",
+        image: "https://i.ibb.co/NYdGg2q/image2.png"
+      }
+    ]
+
+    /* this is an example for new snippet extension make by me xD */
+    for (const product of products) {
+
+      const sliderContainer = document.getElementById('sliderContainer');
+      
+      // add object value to innerHtml
+      sliderContainer.innerHTML += `
+        <section class="slides" id="slides">
+          <h1>${ product.name }</h1>
+          <p>${ product.priceTag }</p>
+          <img src="${product.image}" alt="">
+          <a href="#" class="btn">buy now</a>
+        </section>
+      `;
+    };
+        
+    // added Array.from() to Dom list because it allows the dom list to return in an array form instead of a node list
+    const  slides = Array.from(document.querySelectorAll('.slides')) 
+
+    // Global variables
+    let isDragging = false,
+      startPos = 0,
+      currentTranslate = 0,
+      prevTranslate = 0,
+      animationID = 0,
+      currentIndex = 0
+
+    // loop through the slides with to access individual slide and also their index 
+    slides.forEach((slide, index) => {
+      // too remove the drag effect of the img 
+      const slideImage = slide.querySelector('img');
+      slideImage.addEventListener('dragstart', (e) => e.preventDefault())
+
+      // touch Events
+      slide.addEventListener('touchstart', touchStart(index))
+      slide.addEventListener('touchend', touchEnd)
+      slide.addEventListener('touchmove', touchMove)
+
+      // mouse Events
+      slide.addEventListener('mousedown', touchStart(index))
+      slide.addEventListener('mouseup', touchEnd)
+      slide.addEventListener('mouseleave', touchEnd)
+      slide.addEventListener('mousemove', touchMove)
+    });  
+
+    window.oncontextmenu = function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      return false
+    };
+
+    function touchStart(index) {
+      return function (event) {
+        currentIndex = index
+        startPos = getPosX(event)
+        isDragging = true;
+        animationID = requestAnimationFrame(animation)
+        sliderContainer.classList.add('grabbing');
+        
+      }
+    };
+
+    function touchEnd() {
+      isDragging = false
+      cancelAnimationFrame(animationID)
+
+
+      const movedBy = currentTranslate - prevTranslate
+
+      if (movedBy < -100 && currentIndex < slides.length -1) 
+      currentIndex += 1
+
+      if (movedBy > 100 && currentIndex > 0) 
+      currentIndex -= 1
+
+      setPosByIndex()
+
+      sliderContainer.classList.remove('grabbing');
+
+    };
+
+    function touchMove(event) {
+      if (isDragging) {
+        const currentPos = getPosX(event)
+        currentTranslate = prevTranslate + currentPos - startPos
+      }
+      
+    };
+
+    function getPosX(event) {
+      return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX
+    };
+
+    function animation() {
+      setSlidepos()
+      if (isDragging) requestAnimationFrame(animation)
+    };
+
+    function setSlidepos() {
+      sliderContainer.style.transform = `translateX( ${currentTranslate}px)`
+    };
+
+    function setPosByIndex() {
+      currentTranslate = currentIndex * -window.innerWidth
+      prevTranslate = currentTranslate
+      setSlidepos()
+    }
+
+  </script>
+</body>
+</html>

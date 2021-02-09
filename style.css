@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Open Sans', sans-serif;
+  background: #333333;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  line-height: 1.7;
+  color: #ffffff;
+}
+
+.slider-container {
+  height: 100vh;
+  display: inline-flex;
+  overflow: hidden;
+  transform: translateX(0);
+  transition: transform 0.3s ease-out;
+  cursor: grab;
+}
+
+.slides {
+  max-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  user-select: none;
+  
+}
+
+.slides img {
+  max-width: 100%;
+  max-height: 60%;
+  transition: transform 0.3s ease-in-out;
+}
+
+.slides h1 {
+  font-size: 2rem;
+  margin-bottom: .3rem;
+}
+
+.slides p {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.slides .btn {
+  background: #444444;
+  color: #ffffff;
+  text-decoration: none;
+  padding: .8rem 1.3rem;
+  border-radius: 10px;
+  margin-top: 1rem;
+}
+
+.grabbing {
+  cursor: grabbing;
+
+}
+
+.grabbing .slides img  {
+  transform: scale(0.9);
+}
